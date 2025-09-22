@@ -32,7 +32,7 @@ const Recipe = ({
   const initializeLayerRecipe = useCallback(() => {
     const recipe = [];
     for (let i = 0; i < numLayers; i++) {
-      recipe.push([[1, 1, 0.5]]);
+      recipe.push([[0, 1, 0.5]]);
     }
     setLayerRecipe(recipe);
   }, [numLayers, setLayerRecipe]);
@@ -90,12 +90,12 @@ const Recipe = ({
   };
 
   const modelOptions = [
-    { value: 1, label: "Model 1" },
-    { value: 2, label: "Model 2" },
+    { value: 0, label: "Model 1" },
+    { value: 1, label: "Model 2" },
   ];
 
   const getModelName = (modelValue) => {
-    return modelValue === 1 ? "Model 1" : "Model 2";
+    return modelValue === 0 ? "Model 1" : "Model 2";
   };
 
   const getBlockId = (layerIndex, blockIndex) => {
@@ -324,7 +324,7 @@ const Recipe = ({
                                     }
                                     min={1}
                                     max={
-                                      block[0] === 1
+                                      block[0] === 0
                                         ? modelLayerCounts.model1 === "N/A"
                                           ? 1
                                           : modelLayerCounts.model1
