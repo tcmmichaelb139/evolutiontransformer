@@ -1,7 +1,5 @@
 FROM python:3.12-slim
-WORKDIR /code 
-
-ENV HF_HOME=/code/.cache
+WORKDIR ${HF_HOME}
 
 RUN pip install uv
 
