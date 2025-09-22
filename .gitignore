@@ -1,0 +1,17 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+.env
+.venv
+
+/models/
+
+frontend/node_modules
+frontend/build
+
+.DS_Store
