@@ -64,13 +64,13 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #0ea5e9, #22c55e);
+  background: #0ea5e9;
   border-radius: 4px;
   transition: background 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #0284c7, #16a34a);
+  background: #0284c7;
 }
 
 ::-webkit-scrollbar-corner {

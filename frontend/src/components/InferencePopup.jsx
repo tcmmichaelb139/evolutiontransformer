@@ -9,7 +9,7 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const { inference } = useAPI();
+  const { inference, checkTaskStatus } = useAPI();
 
   const handleInference = async () => {
     if (!selectedModel || !prompt.trim()) {
@@ -23,23 +23,51 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
 
     try {
       const inferenceData = {
-        model: selectedModel,
+        model_name: selectedModel,
         prompt: prompt,
-        max_length: 100, // You can make this configurable if needed
+        max_new_tokens: 100, // You can make this configurable if needed
+        temperature: 0.7, // Add temperature field
       };
 
+      console.log("Starting inference with data:", inferenceData);
       const result = await inference(inferenceData);
+      console.log("Got inference result:", result);
 
-      if (result && result.generated_text) {
-        setResponse(result.generated_text);
+      if (result && result.task_id) {
+        // Check task status for inference result
+        checkTaskStatus(
+          result.task_id,
+          (taskResult) => {
+            console.log("Inference task result:", taskResult);
+            if (taskResult && taskResult.generated_text) {
+              setResponse(taskResult.generated_text);
+            } else if (taskResult && taskResult.error) {
+              setError(`Inference failed: ${taskResult.error}`);
+            } else {
+              setError("No response received from the model");
+            }
+            setIsLoading(false);
+          },
+          (errorMessage) => {
+            // Error callback for task status check
+            console.error("Inference task failed:", errorMessage);
+            setError(`Task failed: ${errorMessage}`);
+            setIsLoading(false);
+          }
+        );
       } else if (result && result.error) {
-        setError(`Inference failed: ${result.error}`);
+        // Check if it's a server error
+        const isServerError = result.error.includes("HTTP 5");
+        const errorPrefix = isServerError ? "🔴 Server Error: " : "Error: ";
+        setError(`${errorPrefix}${result.error}`);
+        setIsLoading(false);
       } else {
-        setError("No response received from the model");
+        setError("No task ID received");
+        setIsLoading(false);
       }
     } catch (err) {
+      console.error("Inference error:", err);
       setError(`Error: ${err.message}`);
-    } finally {
       setIsLoading(false);
     }
   };

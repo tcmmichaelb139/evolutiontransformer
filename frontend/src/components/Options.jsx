@@ -43,36 +43,44 @@ const Options = ({
 
     try {
       const mergeData = {
-        model1: selectedModel1,
-        model2: selectedModel2,
+        model1_name: selectedModel1,
+        model2_name: selectedModel2,
         layer_recipe: layerRecipe,
         embedding_lambdas: embeddingLambdas,
         linear_lambdas: linearLambdas,
-        num_layers: numLayers,
         merged_name: mergedName,
       };
 
+      console.log("Starting merge with data:", mergeData);
       const taskId = await mergeModels(mergeData);
+      console.log("Got merge task ID:", taskId);
 
       if (taskId) {
-        checkTaskStatus(taskId, (result) => {
-          if (result.success) {
-            setMergeStatus("Merge successful!");
-
-            const newModelName = result.model_name || mergedName;
-            setModels((prev) => [...prev, newModelName]);
-
-            setModelLayers(newModelName, numLayers);
-          } else {
-            setMergeStatus(`Merge failed: ${result.error || "Unknown error"}`);
+        checkTaskStatus(
+          taskId,
+          (taskResult) => {
+            console.log("Merge result:", taskResult);
+            if (taskResult.response) {
+              setMergeStatus("Merge successful!");
+              const newModelName = taskResult.response || mergedName;
+              setModels((prev) => [...prev, newModelName]);
+              setModelLayers(newModelName, numLayers);
+            } else {
+              setMergeStatus(
+                `Merge failed: ${taskResult.error || "Unknown error"}`
+              );
+            }
+            setIsLoading(false);
+          },
+          (error) => {
+            console.error("Merge task failed:", error);
+            setMergeStatus(`Merge failed: ${error}`);
+            setIsLoading(false);
           }
-          setIsLoading(false);
-        });
-      } else {
-        setMergeStatus("Failed to start merge process");
-        setIsLoading(false);
+        );
       }
     } catch (error) {
+      console.error("Merge error:", error);
       setMergeStatus(`Error: ${error.message}`);
       setIsLoading(false);
     }

@@ -3,6 +3,7 @@ import "./App.css";
 import Options from "./components/Options";
 import Recipe from "./components/Recipe";
 import { setModelLayers } from "./utils/modelCookies";
+import { useAPI } from "./hooks/useAPI";
 
 function App() {
   const [models, setModels] = useState([]);
@@ -14,11 +15,39 @@ function App() {
   const [mergedName, setMergedName] = useState("merged");
   const [numLayers, setNumLayers] = useState(12);
 
+  const { fetchModels, checkTaskStatus } = useAPI();
+
   useEffect(() => {
-    setModels(["svamp", "tinystories"]);
     setModelLayers("svamp", 24);
     setModelLayers("tinystories", 24);
-  }, []);
+
+    const loadModels = async () => {
+      try {
+        console.log("Loading models...");
+        const taskId = await fetchModels();
+        console.log("Got task ID:", taskId);
+
+        if (taskId) {
+          checkTaskStatus(
+            taskId,
+            (result) => {
+              console.log("Models loaded successfully:", result);
+              if (result && Array.isArray(result.response)) {
+                setModels(result.response);
+              }
+            },
+            (error) => {
+              console.error("Failed to load models:", error);
+            }
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching models:", error);
+      }
+    };
+
+    loadModels();
+  }, [fetchModels, checkTaskStatus]);
 
   return (
     <div className="h-screen bg-gradient-to-br from-primary-50 to-secondary-50 overflow-hidden">
