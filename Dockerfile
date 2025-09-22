@@ -15,7 +15,7 @@ RUN pip install uv
 
 COPY pyproject.toml uv.lock ./
 
-RUN uv export --no-dev | uv pip install -r -
+RUN uv export --no-dev | uv pip install --system -r -
 
 COPY evolutiontransformer/ ./evolutiontransformer/
 
