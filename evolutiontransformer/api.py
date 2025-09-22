@@ -22,7 +22,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for now to debug
+    allow_origins=[
+        "http://localhost:5173",
+        "https://tcmmichaelb139-evolutiontransformer.hf.space",
+    ],  # Allow all origins for now to debug
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -53,13 +56,12 @@ def get_session_id(request: Request, response: Response):
     if not session_id:
         session_id = str(uuid.uuid4())
         print(f"Generated new session_id: {session_id}")
-        # Set cookie with appropriate settings
         response.set_cookie(
             key="session_id",
             value=session_id,
-            httponly=True,  # Prevent XSS attacks
-            secure=True,  # Only send over HTTPS in production
-            samesite="lax",  # Allow same-site requests
+            httponly=True,
+            secure=True,
+            samesite="none",
         )
 
     return session_id

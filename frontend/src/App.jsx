@@ -23,15 +23,12 @@ function App() {
 
     const loadModels = async () => {
       try {
-        console.log("Loading models...");
         const taskId = await fetchModels();
-        console.log("Got task ID:", taskId);
 
         if (taskId) {
           checkTaskStatus(
             taskId,
             (result) => {
-              console.log("Models loaded successfully:", result);
               if (result && Array.isArray(result.response)) {
                 setModels(result.response);
               }
