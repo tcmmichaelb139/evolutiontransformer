@@ -22,7 +22,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # todo add website url
+    allow_origins=["*"],  # Allow all origins for now to debug
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -47,10 +47,20 @@ class MergeRequest(BaseModel):
 
 def get_session_id(request: Request, response: Response):
     session_id = request.cookies.get("session_id")
+    print(f"Received cookies: {request.cookies}")
+    print(f"Current session_id: {session_id}")
 
     if not session_id:
         session_id = str(uuid.uuid4())
-        response.set_cookie(key="session_id", value=session_id)
+        print(f"Generated new session_id: {session_id}")
+        # Set cookie with appropriate settings
+        response.set_cookie(
+            key="session_id",
+            value=session_id,
+            httponly=True,  # Prevent XSS attacks
+            secure=True,  # Only send over HTTPS in production
+            samesite="lax",  # Allow same-site requests
+        )
 
     return session_id
 
