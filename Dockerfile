@@ -20,8 +20,6 @@ RUN uv sync --no-dev
 COPY --chown=user:user evolutiontransformer/ ./evolutiontransformer/
 COPY --chown=user:user start.sh .
 
-COPY start.sh .
-
 RUN chmod +x ./start.sh
 
 CMD ["./start.sh"]
