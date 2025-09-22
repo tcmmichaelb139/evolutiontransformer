@@ -9,6 +9,8 @@ ENV HF_HOME=$HOME/.cache
 
 WORKDIR $HOME/app
 
+RUN chown -R user:user $HOME/app
+
 COPY --chown=user pyproject.toml uv.lock ./
 
 USER user
