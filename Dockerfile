@@ -15,9 +15,10 @@ RUN pip install uv
 
 COPY pyproject.toml uv.lock ./
 
-RUN uv export --no-dev | uv pip install --system -r -
+RUN uv sync --no-dev
 
-COPY evolutiontransformer/ ./evolutiontransformer/
+COPY --chown=user:user evolutiontransformer/ ./evolutiontransformer/
+COPY --chown=user:user start.sh .
 
 COPY start.sh .
 
