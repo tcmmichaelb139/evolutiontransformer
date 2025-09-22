@@ -25,6 +25,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "https://tcmmichaelb139-evolutiontransformer.hf.space",
+        "https://evolutiontransformer.michaelbao.com",
     ],  # Allow all origins for now to debug
     allow_credentials=True,
     allow_methods=["*"],
