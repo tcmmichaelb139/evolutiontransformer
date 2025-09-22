@@ -4,6 +4,7 @@ import NumberInput from "./NumberInput";
 import InferencePopup from "./InferencePopup";
 import { setModelLayers } from "../utils/modelCookies";
 import { useAPI } from "../hooks/useAPI";
+import { devLog, devError } from "../utils/devLogger";
 
 const Options = ({
   models,
@@ -51,15 +52,15 @@ const Options = ({
         merged_name: mergedName,
       };
 
-      console.log("Starting merge with data:", mergeData);
+      devLog("Starting merge with data:", mergeData);
       const taskId = await mergeModels(mergeData);
-      console.log("Got merge task ID:", taskId);
+      devLog("Got merge task ID:", taskId);
 
       if (taskId) {
         checkTaskStatus(
           taskId,
           (taskResult) => {
-            console.log("Merge result:", taskResult);
+            devLog("Merge result:", taskResult);
             if (taskResult.response) {
               setMergeStatus("Merge successful!");
               const newModelName = taskResult.response || mergedName;
@@ -73,14 +74,14 @@ const Options = ({
             setIsLoading(false);
           },
           (error) => {
-            console.error("Merge task failed:", error);
+            devError("Merge task failed:", error);
             setMergeStatus(`Merge failed: ${error}`);
             setIsLoading(false);
           }
         );
       }
     } catch (error) {
-      console.error("Merge error:", error);
+      devError("Merge error:", error);
       setMergeStatus(`Error: ${error.message}`);
       setIsLoading(false);
     }

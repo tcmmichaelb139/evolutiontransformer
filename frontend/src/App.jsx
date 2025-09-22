@@ -4,6 +4,7 @@ import Options from "./components/Options";
 import Recipe from "./components/Recipe";
 import { setModelLayers } from "./utils/modelCookies";
 import { useAPI } from "./hooks/useAPI";
+import { devError } from "./utils/devLogger";
 
 function App() {
   const [models, setModels] = useState([]);
@@ -34,12 +35,12 @@ function App() {
               }
             },
             (error) => {
-              console.error("Failed to load models:", error);
+              devError("Failed to load models:", error);
             }
           );
         }
       } catch (error) {
-        console.error("Error fetching models:", error);
+        devError("Error fetching models:", error);
       }
     };
 

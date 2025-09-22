@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Dropdown from "./Dropdown";
+import NumberInput from "./NumberInput";
 import { useAPI } from "../hooks/useAPI";
+import { devLog, devError } from "../utils/devLogger";
 
 const InferencePopup = ({ isOpen, onClose, models }) => {
   const [selectedModel, setSelectedModel] = useState("");
@@ -8,6 +10,8 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
   const [response, setResponse] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [maxNewTokens, setMaxNewTokens] = useState(512);
+  const [temperature, setTemperature] = useState(0.7);
 
   const { inference, checkTaskStatus } = useAPI();
 
@@ -25,22 +29,21 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
       const inferenceData = {
         model_name: selectedModel,
         prompt: prompt,
-        max_new_tokens: 100, // You can make this configurable if needed
-        temperature: 0.7, // Add temperature field
+        max_new_tokens: maxNewTokens,
+        temperature: temperature,
       };
 
-      console.log("Starting inference with data:", inferenceData);
+      devLog("Starting inference with data:", inferenceData);
       const result = await inference(inferenceData);
-      console.log("Got inference result:", result);
+      devLog("Got inference result:", result);
 
       if (result && result.task_id) {
-        // Check task status for inference result
         checkTaskStatus(
           result.task_id,
           (taskResult) => {
-            console.log("Inference task result:", taskResult);
-            if (taskResult && taskResult.generated_text) {
-              setResponse(taskResult.generated_text);
+            devLog("Inference task result:", taskResult);
+            if (taskResult && taskResult.response) {
+              setResponse(taskResult.response);
             } else if (taskResult && taskResult.error) {
               setError(`Inference failed: ${taskResult.error}`);
             } else {
@@ -50,7 +53,7 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
           },
           (errorMessage) => {
             // Error callback for task status check
-            console.error("Inference task failed:", errorMessage);
+            devError("Inference task failed:", errorMessage);
             setError(`Task failed: ${errorMessage}`);
             setIsLoading(false);
           }
@@ -66,7 +69,7 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
         setIsLoading(false);
       }
     } catch (err) {
-      console.error("Inference error:", err);
+      devError("Inference error:", err);
       setError(`Error: ${err.message}`);
       setIsLoading(false);
     }
@@ -137,9 +140,7 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
           </div>
         </div>
 
-        {/* Content */}
         <div className="p-6 space-y-6 max-h-[calc(90vh-140px)] overflow-y-auto">
-          {/* Model Selection */}
           <Dropdown
             label="Select Model"
             selectedValue={selectedModel}
@@ -150,7 +151,6 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
             searchPlaceholder="Search models..."
           />
 
-          {/* Prompt Input */}
           <div>
             <label className="block text-sm font-medium text-secondary-700 mb-2">
               Prompt
@@ -162,6 +162,40 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
               className="w-full h-32 p-3 border-2 border-secondary-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
               disabled={isLoading}
             />
+          </div>
+
+          {/* Configuration Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-secondary-700 mb-2">
+                Max New Tokens
+              </label>
+              <NumberInput
+                value={maxNewTokens}
+                onChange={setMaxNewTokens}
+                min={1}
+                max={1024}
+                step={1}
+                className=""
+                disabled={isLoading}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-secondary-700 mb-2">
+                Temperature
+              </label>
+              <NumberInput
+                value={temperature}
+                onChange={setTemperature}
+                min={0.1}
+                max={2.0}
+                step={0.1}
+                allowDecimals={true}
+                className=""
+                disabled={isLoading}
+              />
+            </div>
           </div>
 
           {/* Generate Button */}
