@@ -1,14 +1,21 @@
 FROM python:3.12-slim
 
-ENV HF_HOME=/home/user/huggingface
+RUN useradd -m -u 1000 user
 
-WORKDIR HF_HOME
+USER user
+
+ENV HOME=/home/user \
+	PATH=/home/user/.local/bin:$PATH
+
+ENV HF_HOME=$HOME/.cache
+
+WORKDIR $HOME/app
 
 RUN pip install uv
 
 COPY pyproject.toml uv.lock ./
 
-RUN uv export --no-dev | uv pip install --system -r -
+RUN uv export --no-dev | uv pip install -r -
 
 COPY evolutiontransformer/ ./evolutiontransformer/
 
