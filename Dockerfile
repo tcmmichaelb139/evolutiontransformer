@@ -1,5 +1,8 @@
 FROM python:3.12-slim
-WORKDIR ${HF_HOME}
+
+ENV HF_HOME=/home/user/huggingface
+
+WORKDIR HF_HOME
 
 RUN pip install uv
 
