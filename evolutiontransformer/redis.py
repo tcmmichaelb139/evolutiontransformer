@@ -9,14 +9,22 @@ redis_client = Redis.from_url(REDIS_URL, decode_responses=True)
 
 def add_model_to_session(session_id: str, model_name: str, ttl_seconds: int = 3600):
     session_key = f"session:{session_id}:models"
-    redis_client.sadd(session_key, model_name)
-    redis_client.expire(session_key, ttl_seconds)
+
+    existing_models = get_session_models(session_id)
+
+    if model_name not in existing_models:
+        existing_models.append(model_name)
+
+    models_json = json.dumps(existing_models)
+    redis_client.setex(session_key, ttl_seconds, models_json)
 
 
 def get_session_models(session_id: str):
     session_key = f"session:{session_id}:models"
-    models = redis_client.smembers(session_key)
-    return list(models)
+    models_json = redis_client.get(session_key)
+    if models_json:
+        return json.loads(models_json)
+    return []
 
 
 def save_model_recipe(

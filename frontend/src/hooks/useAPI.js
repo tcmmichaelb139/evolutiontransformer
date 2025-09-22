@@ -47,9 +47,25 @@ export const useAPI = () => {
     }
   }, []);
 
+  const inference = useCallback(async (inferenceData) => {
+    try {
+      const response = await fetch(`${API_BASE}/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(inferenceData),
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Inference failed:", error);
+      return null;
+    }
+  }, []);
+
   return {
     checkTaskStatus,
     fetchModels,
     mergeModels,
+    inference,
   };
 };
