@@ -12,6 +12,7 @@ from evolutiontransformer.redis import (
     get_session_models,
     save_model_recipe,
     get_model_recipe,
+    delete_session,
 )
 
 
@@ -256,16 +257,13 @@ def merge_models_task(
 
 @celery_app.task(name="tasks.get_all_models")
 def get_all_models_task(session_id: str) -> List[str]:
-    global SESSION_MODELS
-    return {
-        "response": list((BASE_MODELS | SESSION_MODELS[session_id]).keys()),
-    }
+    base_models = BASE_MODELS_NAMES
+    session_models = get_session_models(session_id)
+    all_models = list(set(base_models + session_models))
+    return {"response": all_models}
 
 
 @celery_app.task(name="tasks.clear_session_models")
 def clear_session_models_task(session_id: str) -> str:
-    global SESSION_MODELS
-    if session_id in SESSION_MODELS:
-        del SESSION_MODELS[session_id]
-    del SESSION_MODELS[session_id]
-    return {"response": "SUCCESS"}
+    delete_session(session_id)
+    return {"response": ""}

@@ -279,6 +279,20 @@ def test_merge_two_children_then_merge(session):
     output_text = final_result["response"]
     answer = get_final_answer(output_text)
 
+    number_of_models = session.post(f"{BASE_URL}/list_models")
+
+    assert number_of_models.status_code == 200
+    number_of_models_data = number_of_models.json()
+    assert "task_id" in number_of_models_data
+    number_of_models_task_id = number_of_models_data["task_id"]
+
+    number_of_models_result = await_task_completion(session, number_of_models_task_id)
+
+    assert "response" in number_of_models_result
+    models = number_of_models_result["response"]
+    print(models)
+    assert len(models) >= 5
+
     assert answer == 14
 
 
