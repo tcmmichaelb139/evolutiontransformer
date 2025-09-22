@@ -258,6 +258,20 @@ def test_merge_two_children_then_merge(client):
 
     time.sleep(5)
 
+    number_of_models = client.post(f"/list_models")
+
+    assert number_of_models.status_code == 200
+    number_of_models_data = number_of_models.json()
+    assert "task_id" in number_of_models_data
+    number_of_models_task_id = number_of_models_data["task_id"]
+
+    number_of_models_result = await_task_completion(client, number_of_models_task_id)
+
+    assert "response" in number_of_models_result
+    models = number_of_models_result["response"]
+    print(models)
+    assert len(models) == 5
+
     generate_response = client.post(
         "/generate",
         json={
