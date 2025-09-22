@@ -32,7 +32,7 @@ const Recipe = ({
   const initializeLayerRecipe = useCallback(() => {
     const recipe = [];
     for (let i = 0; i < numLayers; i++) {
-      recipe.push([[0, 1, 0.5]]);
+      recipe.push([[1, 0, 0.5]]);
     }
     setLayerRecipe(recipe);
   }, [numLayers, setLayerRecipe]);
@@ -65,10 +65,10 @@ const Recipe = ({
     const block = [...newRecipe[layerIndex][blockIndex]];
 
     if (field === "model") {
-      block[0] = value;
-      block[1] = 1;
-    } else if (field === "sourceLayer") {
       block[1] = value;
+      block[0] = 1;
+    } else if (field === "sourceLayer") {
+      block[0] = value;
     } else if (field === "percentage") {
       block[2] = value / 100;
     }
@@ -240,7 +240,7 @@ const Recipe = ({
                   {layer.map((block, blockIndex) => {
                     const blockId = getBlockId(layerIndex, blockIndex);
                     const isExpanded = expandedBlock === blockId;
-                    const modelName = getModelName(block[0]);
+                    const modelName = getModelName(block[1]);
 
                     return (
                       <div key={blockIndex} className="relative">
@@ -257,7 +257,7 @@ const Recipe = ({
                         >
                           <span className="text-primary-600">{modelName}</span>
                           <span className="text-secondary-500">
-                            L{block[1]}
+                            L{block[0]}
                           </span>
                           <span className="text-accent-600">
                             {Math.round(block[2] * 100)}%
@@ -291,7 +291,7 @@ const Recipe = ({
                                 </label>
                                 <Dropdown
                                   selectedValue={modelOptions.find(
-                                    (opt) => opt.value === block[0]
+                                    (opt) => opt.value === block[1]
                                   )}
                                   onSelect={(option) => {
                                     updateBlock(
@@ -313,7 +313,7 @@ const Recipe = ({
                                     Layer
                                   </label>
                                   <NumberInput
-                                    value={block[1]}
+                                    value={block[0]}
                                     onChange={(value) =>
                                       updateBlock(
                                         layerIndex,
@@ -324,7 +324,7 @@ const Recipe = ({
                                     }
                                     min={1}
                                     max={
-                                      block[0] === 0
+                                      block[1] === 0
                                         ? modelLayerCounts.model1 === "N/A"
                                           ? 1
                                           : modelLayerCounts.model1
