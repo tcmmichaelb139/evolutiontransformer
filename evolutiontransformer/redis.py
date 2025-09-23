@@ -7,28 +7,24 @@ REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 redis_client = Redis.from_url(REDIS_URL, decode_responses=True)
 
 
-def add_model_to_session(session_id: str, model_name: str, ttl_seconds: int = 3600):
-    session_key = f"session:{session_id}:models"
-
-    existing_models = redis_client.json().get(session_key, "$")
-    if existing_models and len(existing_models) > 0:
-        existing_models = existing_models[0]
-    else:
-        existing_models = []
-
-    if model_name not in existing_models:
-        existing_models.append(model_name)
-
-    redis_client.json().set(session_key, "$", existing_models)
-    redis_client.expire(session_key, ttl_seconds)
-
-
 def get_session_models(session_id: str):
     session_key = f"session:{session_id}:models"
     models = redis_client.json().get(session_key, "$")
     if models and len(models) > 0:
         return models[0]
     return []
+
+
+def add_model_to_session(session_id: str, model_name: str, ttl_seconds: int = 3600):
+    session_key = f"session:{session_id}:models"
+
+    existing_models = get_session_models(session_id)
+
+    if model_name not in existing_models:
+        existing_models.append(model_name)
+
+    redis_client.json().set(session_key, "$", existing_models)
+    redis_client.expire(session_key, ttl_seconds)
 
 
 def save_model_recipe(
