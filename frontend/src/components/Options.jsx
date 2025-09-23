@@ -20,6 +20,7 @@ const Options = ({
   setModels,
   mergedName,
   setMergedName,
+  isSpaceLoading,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [mergeStatus, setMergeStatus] = useState("");
@@ -130,8 +131,10 @@ const Options = ({
             onSelect={setSelectedModel1}
             options={models}
             placeholder="Select base model..."
-            loading={models.length === 0}
-            loadingMessage="Loading models..."
+            loading={isSpaceLoading || models.length === 0}
+            loadingMessage={
+              isSpaceLoading ? "Space is starting up..." : "Loading models..."
+            }
             emptyMessage="No models available"
             showSearch={true}
             searchPlaceholder="Search models..."
@@ -143,8 +146,10 @@ const Options = ({
             onSelect={setSelectedModel2}
             options={models}
             placeholder="Select target model..."
-            loading={models.length === 0}
-            loadingMessage="Loading models..."
+            loading={isSpaceLoading || models.length === 0}
+            loadingMessage={
+              isSpaceLoading ? "Space is starting up..." : "Loading models..."
+            }
             emptyMessage="No models available"
             showSearch={true}
             searchPlaceholder="Search models..."
@@ -218,6 +223,7 @@ const Options = ({
               <button
                 onClick={handleMerge}
                 disabled={
+                  isSpaceLoading ||
                   isLoading ||
                   !selectedModel1 ||
                   !selectedModel2 ||
@@ -226,7 +232,12 @@ const Options = ({
                 }
                 className="w-full py-2.5 px-3 bg-gradient-to-r from-accent-500 to-primary-500 text-background font-medium rounded-lg hover:from-accent-600 hover:to-primary-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 text-sm"
               >
-                {isLoading ? (
+                {isSpaceLoading ? (
+                  <>
+                    <div className="animate-spin w-3.5 h-3.5 border-2 border-background border-t-transparent rounded-full"></div>
+                    <span>Starting up...</span>
+                  </>
+                ) : isLoading ? (
                   <>
                     <div className="animate-spin w-3.5 h-3.5 border-2 border-background border-t-transparent rounded-full"></div>
                     <span>Merging...</span>

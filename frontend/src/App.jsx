@@ -15,6 +15,7 @@ function App() {
   const [linearLambdas, setLinearLambdas] = useState([0.5, 0.5]);
   const [mergedName, setMergedName] = useState("merged");
   const [numLayers, setNumLayers] = useState(12);
+  const [isSpaceLoading, setIsSpaceLoading] = useState(true);
 
   const { fetchModels, checkTaskStatus } = useAPI();
 
@@ -32,15 +33,20 @@ function App() {
             (result) => {
               if (result && Array.isArray(result.response)) {
                 setModels(result.response);
+                setIsSpaceLoading(false);
               }
             },
             (error) => {
               devError("Failed to load models:", error);
+              setIsSpaceLoading(false); // Set to false even on error
             }
           );
+        } else {
+          setIsSpaceLoading(false);
         }
       } catch (error) {
         devError("Error fetching models:", error);
+        setIsSpaceLoading(false); // Set to false even on error
       }
     };
 
@@ -78,6 +84,21 @@ function App() {
         </svg>
       </a>
 
+      {/* Loading Overlay */}
+      {isSpaceLoading && (
+        <div className="fixed inset-0 bg-background/90 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin w-12 h-12 border-4 border-primary-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <h2 className="text-xl font-semibold text-foreground mb-2">
+              Space is starting up...
+            </h2>
+            <p className="text-secondary-600">
+              Initializing Evolution Transformer
+            </p>
+          </div>
+        </div>
+      )}
+
       <Options
         models={models}
         selectedModel1={selectedModel1}
@@ -92,6 +113,7 @@ function App() {
         setModels={setModels}
         mergedName={mergedName}
         setMergedName={setMergedName}
+        isSpaceLoading={isSpaceLoading}
       />
       <Recipe
         layerRecipe={layerRecipe}
