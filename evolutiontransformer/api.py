@@ -16,7 +16,13 @@ load_dotenv()
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
 
-celery_app = Celery("tasks", broker=REDIS_URL, backend=REDIS_URL)
+celery_app = Celery(
+    "tasks",
+    broker=REDIS_URL,
+    backend=REDIS_URL,
+    broker_transport_options={"polling_interval": 3600},
+    worker_event_heartbeat=3600,
+)
 
 app = FastAPI()
 

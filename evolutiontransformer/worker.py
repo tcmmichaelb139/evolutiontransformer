@@ -29,7 +29,13 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
-celery_app = Celery("tasks", broker=REDIS_URL, backend=REDIS_URL)
+celery_app = Celery(
+    "tasks",
+    broker=REDIS_URL,
+    backend=REDIS_URL,
+    broker_transport_options={"polling_interval": 3600},
+    worker_event_heartbeat=3600,
+)
 
 
 def load_base_models_if_needed():
@@ -137,8 +143,6 @@ def merge_models(
     model1_name = "svamp"
     model2_name = "tinystories"
 
-    load_base_models_if_needed()
-
     def get_model_layer(layer, model):
         return model.transformer.h[layer].state_dict()
 
@@ -207,6 +211,8 @@ def inference_task(
     session_id: str, model_name, prompt, max_new_tokens=512, temperature=0.7
 ):
     try:
+        load_base_models_if_needed()
+
         model_recipe = get_model_recipe_default(session_id, model_name)
         print("WORKER: Creating merged model...")
         model = merge_models(model_recipe)
@@ -229,6 +235,8 @@ def merge_models_task(
 ):
     if len(layer_recipe) > 48:
         raise InvalidTaskError("Layer recipe too long. Max 48 layers supported.")
+
+    load_base_models_if_needed()
 
     session_models = get_session_models(session_id)
 

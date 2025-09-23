@@ -8,11 +8,15 @@ redis_client = Redis.from_url(REDIS_URL, decode_responses=True)
 
 
 def get_session_models(session_id: str):
-    session_key = f"session:{session_id}:models"
-    models = redis_client.json().get(session_key, "$")
-    if models and len(models) > 0:
-        return models[0]
-    return []
+    try:
+        session_key = f"session:{session_id}:models"
+        models = redis_client.json().get(session_key, "$")
+        if models and len(models) > 0:
+            return models[0]
+        return []
+    except Exception as e:
+        print(f"Error getting session models: {e}")
+        return []
 
 
 def add_model_to_session(session_id: str, model_name: str, ttl_seconds: int = 3600):
@@ -36,11 +40,15 @@ def save_model_recipe(
 
 
 def get_model_recipe(session_id: str, model_name: str):
-    recipe_key = f"model:{session_id}:{model_name}"
-    recipe = redis_client.json().get(recipe_key, "$")
-    if recipe and len(recipe) > 0:
-        return recipe[0]
-    return None
+    try:
+        recipe_key = f"model:{session_id}:{model_name}"
+        recipe = redis_client.json().get(recipe_key, "$")
+        if recipe and len(recipe) > 0:
+            return recipe[0]
+        return None
+    except Exception as e:
+        print(f"Error getting model recipe: {e}")
+        return None
 
 
 def delete_session(session_id: str):
