@@ -71,6 +71,7 @@ const Recipe = ({
 
   const addBlockToLayer = (layerIndex) => {
     const newRecipe = [...layerRecipe];
+    // layer 1, model 0 or 1, weight 0.5
     const newBlock = [1, Math.random() < 0.5 ? 0 : 1, 0.5];
     newRecipe[layerIndex] = [...newRecipe[layerIndex], newBlock];
     setLayerRecipe(newRecipe);

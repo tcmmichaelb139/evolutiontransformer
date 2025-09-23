@@ -43,10 +43,19 @@ const Options = ({
     setMergeStatus("Merging models...");
 
     try {
+      // Convert layer indices from 1-based (frontend) to 0-based (backend)
+      const backendLayerRecipe = layerRecipe.map((layer) =>
+        layer.map((block) => [
+          block[0] - 1, // Convert sourceLayer from 1-based to 0-based
+          block[1], // modelIndex stays the same
+          block[2], // percentage stays the same
+        ])
+      );
+
       const mergeData = {
         model1_name: selectedModel1,
         model2_name: selectedModel2,
-        layer_recipe: layerRecipe,
+        layer_recipe: backendLayerRecipe,
         embedding_lambdas: embeddingLambdas,
         linear_lambdas: linearLambdas,
         merged_name: mergedName,
