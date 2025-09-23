@@ -33,7 +33,7 @@ celery_app = Celery(
     "tasks",
     broker=REDIS_URL,
     backend=REDIS_URL,
-    broker_transport_options={"polling_interval": 3600},
+    broker_transport_options={"polling_interval": 3600, "heartbeat_interval": 120},
     worker_event_heartbeat=3600,
 )
 
