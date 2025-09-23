@@ -20,8 +20,11 @@ celery_app = Celery(
     "tasks",
     broker=REDIS_URL,
     backend=REDIS_URL,
-    broker_transport_options={"polling_interval": 3600, "heartbeat_interval": 120},
-    worker_event_heartbeat=3600,
+)
+celery_app.conf.update(
+    broker_transport_options={"poll_interval": 5},
+    worker_send_task_events=False,
+    task_send_sent_event=False,
 )
 
 app = FastAPI()
