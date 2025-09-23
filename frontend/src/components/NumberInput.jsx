@@ -90,7 +90,7 @@ const NumberInput = ({
     <div className={className}>
       {label && (
         <label
-          className={`block font-medium text-secondary-700 ${
+          className={`block font-medium text-foreground ${
             compact ? "text-xs mb-1" : "text-sm mb-2"
           }`}
         >
@@ -105,7 +105,7 @@ const NumberInput = ({
           onBlur={handleBlur}
           step={step}
           disabled={disabled}
-          className={`w-full bg-white border-2 border-secondary-300 hover:bg-primary-50 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-200 text-secondary-800 font-medium disabled:opacity-50 disabled:cursor-not-allowed ${
+          className={`w-full bg-background border-2 border-secondary-300 hover:bg-primary-50 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-200 text-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed ${
             compact ? "p-2 rounded-lg text-sm" : "p-4 rounded-xl"
           }`}
           min={min}
@@ -117,7 +117,7 @@ const NumberInput = ({
           }`}
         >
           <div
-            className={`text-secondary-500 bg-white px-1 py-0.5 rounded border border-secondary-200 ${
+            className={`text-foreground bg-background px-1 py-0.5 rounded border border-secondary-200 ${
               compact ? "text-xs px-1" : "text-xs px-2 py-1"
             }`}
           >

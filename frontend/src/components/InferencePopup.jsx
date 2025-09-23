@@ -95,12 +95,12 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
         WebkitBackdropFilter: "blur(8px)", // Safari support
       }}
     >
-      <div className="bg-white rounded-2xl border-2 border-primary-200 shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+      <div className="bg-background rounded-2xl border-2 border-primary-200 shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="p-6 border-b border-secondary-200 bg-gradient-to-r from-primary-50 to-accent-50">
+        <div className="p-6 border-b border-secondary-200 bg-secondary-50">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-accent-500 rounded-lg flex items-center justify-center text-white">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-accent-500 rounded-lg flex items-center justify-center text-background">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -115,13 +115,13 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
               </div>
-              <h2 className="text-xl font-bold text-secondary-800">
+              <h2 className="text-xl font-bold text-foreground">
                 Model Inference
               </h2>
             </div>
             <button
               onClick={handleClose}
-              className="w-8 h-8 rounded-lg hover:bg-secondary-200 transition-colors duration-200 flex items-center justify-center text-secondary-600 hover:text-secondary-800"
+              className="w-8 h-8 rounded-lg hover:bg-secondary-200 transition-colors duration-200 flex items-center justify-center text-foreground hover:text-foreground"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -152,7 +152,7 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
           />
 
           <div>
-            <label className="block text-sm font-medium text-secondary-700 mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Prompt
             </label>
             <textarea
@@ -167,7 +167,7 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
           {/* Configuration Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-secondary-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Max New Tokens
               </label>
               <NumberInput
@@ -182,7 +182,7 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-secondary-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Temperature
               </label>
               <NumberInput
@@ -202,11 +202,11 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
           <button
             onClick={handleInference}
             disabled={isLoading || !selectedModel || !prompt.trim()}
-            className="w-full py-3 px-4 bg-gradient-to-r from-primary-500 to-accent-500 text-white font-medium rounded-lg hover:from-primary-600 hover:to-accent-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+            className="w-full py-3 px-4 bg-gradient-to-r from-primary-500 to-accent-500 text-background font-medium rounded-lg hover:from-primary-600 hover:to-accent-600 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
           >
             {isLoading ? (
               <>
-                <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                <div className="animate-spin w-4 h-4 border-2 border-background border-t-transparent rounded-full"></div>
                 <span>Generating...</span>
               </>
             ) : (
@@ -239,11 +239,11 @@ const InferencePopup = ({ isOpen, onClose, models }) => {
           {/* Response Display */}
           {response && (
             <div>
-              <label className="block text-sm font-medium text-secondary-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Generated Response
               </label>
               <div className="p-4 bg-primary-50 border-2 border-primary-200 rounded-xl">
-                <p className="text-secondary-800 whitespace-pre-wrap">
+                <p className="text-foreground backgroundspace-pre-wrap">
                   {response}
                 </p>
               </div>

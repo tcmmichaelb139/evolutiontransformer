@@ -43,24 +43,22 @@ const Dropdown = ({
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
       {label && (
-        <label className="block text-sm font-medium text-secondary-700 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           {label}
         </label>
       )}
       <button
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
-        className={`w-full p-4 rounded-xl text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed bg-white border-2 border-secondary-300 hover:bg-primary-50 hover:shadow-lg ${className}`}
+        className={`w-full p-4 rounded-xl text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed bg-background border-2 border-secondary-300 hover:bg-primary-50 hover:shadow-lg ${className}`}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             {icon && <div className="text-lg">{icon}</div>}
             <span
               className={`${
-                isSelected
-                  ? "text-secondary-800 font-medium"
-                  : "text-secondary-500"
-              } ${loading ? "text-secondary-400" : ""}`}
+                isSelected ? "text-foreground font-medium" : "text-foreground"
+              } ${loading ? "text-foreground" : ""}`}
             >
               {loading ? loadingMessage : displayValue}
             </span>
@@ -72,7 +70,7 @@ const Dropdown = ({
             <svg
               className={`w-5 h-5 text-primary-600 transition-transform duration-200 ${
                 isOpen ? "rotate-180" : ""
-              } ${disabled ? "text-secondary-400" : ""}`}
+              } ${disabled ? "text-foreground" : ""}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -89,13 +87,13 @@ const Dropdown = ({
       </button>
       {isOpen && !disabled && (
         <div
-          className={`absolute z-50 w-full mt-2 rounded-xl max-h-60 overflow-hidden bg-white border-2 border-primary-200 shadow-lg ${dropdownClassName}`}
+          className={`absolute z-50 w-full mt-2 rounded-xl max-h-60 overflow-hidden bg-background border-2 border-primary-200 shadow-lg ${dropdownClassName}`}
         >
           {showSearch && (
             <div className="p-3 border-b border-secondary-100">
               <div className="relative">
                 <svg
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-secondary-400"
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-foreground"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -120,12 +118,12 @@ const Dropdown = ({
           )}
           <div className="max-h-48 overflow-y-auto p-2">
             {loading ? (
-              <div className="p-4 text-center text-secondary-500">
+              <div className="p-4 text-center text-foreground">
                 <div className="animate-spin w-6 h-6 border-2 border-primary-500 border-t-transparent rounded-full mx-auto mb-2"></div>
                 {loadingMessage}
               </div>
             ) : filteredOptions.length === 0 ? (
-              <div className="p-4 text-center text-secondary-500">
+              <div className="p-4 text-center text-foreground">
                 {emptyMessage}
               </div>
             ) : (
@@ -148,45 +146,23 @@ const Dropdown = ({
                     className={`w-full p-3 text-left rounded-lg transition-all duration-200 hover:bg-blue-100 hover:text-blue-900 ${
                       isOptionSelected
                         ? "bg-gradient-to-r from-primary-200 to-accent-200 text-primary-800 font-medium"
-                        : "text-secondary-700 hover:bg-blue-50"
+                        : "text-foreground hover:bg-blue-50"
                     } ${optionClassName}`}
                   >
                     <div className="flex items-center space-x-3">
                       {optionIcon && (
                         <div className="text-lg">{optionIcon}</div>
                       )}
-                      <div
-                        className={`w-3 h-3 rounded-full transition-colors ${
-                          isOptionSelected
-                            ? "bg-primary-600"
-                            : "bg-secondary-300"
-                        }`}
-                      ></div>
                       <div className="flex-1 min-w-0">
                         <div className="truncate font-medium">
                           {optionLabel}
                         </div>
                         {optionDescription && (
-                          <div className="text-xs text-secondary-500 truncate mt-1">
+                          <div className="text-xs text-foreground truncate mt-1">
                             {optionDescription}
                           </div>
                         )}
                       </div>
-                      {isOptionSelected && (
-                        <svg
-                          className="w-4 h-4 text-primary-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      )}
                     </div>
                   </button>
                 );

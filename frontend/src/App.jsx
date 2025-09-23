@@ -48,7 +48,7 @@ function App() {
   }, [fetchModels, checkTaskStatus]);
 
   return (
-    <div className="h-screen bg-gradient-to-br from-primary-50 to-secondary-50 overflow-hidden">
+    <div className="h-screen bg-secondary-50 overflow-hidden">
       {/* GitHub Corner */}
       <a
         href="https://github.com/tcmmichaelb139/evolutiontransformer"
@@ -61,7 +61,7 @@ function App() {
           width="40"
           height="40"
           viewBox="0 0 250 250"
-          className="fill-primary-500 text-white absolute top-0 right-0 border-0"
+          className="fill-primary-500 text-background absolute top-0 right-0 border-0"
           aria-hidden="true"
         >
           <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" />

@@ -108,7 +108,7 @@ const Recipe = ({
   };
 
   return (
-    <div className="p-6 border-2 border-primary-200 rounded-2xl bg-gradient-to-br from-white to-primary-50 shadow-xl fixed top-4 right-4 bottom-4 left-[27rem] overflow-y-auto ">
+    <div className="p-6 border-2 border-primary-200 rounded-2xl bg-background shadow-xl fixed top-4 right-4 bottom-4 left-[27rem] overflow-y-auto ">
       <div className="flex items-center space-x-2 mb-6">
         <div className="w-8 h-8 bg-gradient-to-br from-accent-500 to-primary-500 rounded-lg flex items-center justify-center">
           <svg
@@ -121,18 +121,18 @@ const Recipe = ({
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="text-white"
+            className="text-background"
           >
             <path d="M12 3v18m9-9H3" />
           </svg>
         </div>
-        <h2 className="text-xl font-bold text-secondary-800">Layer Recipe</h2>
+        <h2 className="text-xl font-bold text-foreground">Layer Recipe</h2>
       </div>
 
       <div className="space-y-8">
         <div className="grid grid-cols-2 gap-6">
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-secondary-700">
+            <h3 className="text-lg font-semibold text-foreground">
               Embedding Layers
             </h3>
             <div className="space-y-3">
@@ -154,7 +154,7 @@ const Recipe = ({
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-secondary-700">
+            <h3 className="text-lg font-semibold text-foreground">
               Linear Layers
             </h3>
             <div className="space-y-3">
@@ -178,10 +178,10 @@ const Recipe = ({
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-secondary-700">
+            <h3 className="text-lg font-semibold text-foreground">
               Transformer Layers
             </h3>
-            <div className="text-xs text-secondary-500 space-x-4">
+            <div className="text-xs text-foreground space-x-4">
               <span>
                 Model 1:{" "}
                 {modelLayerCounts.model1 === "N/A"
@@ -200,14 +200,14 @@ const Recipe = ({
             {layerRecipe.map((layer, layerIndex) => (
               <div
                 key={layerIndex}
-                className="relative border-2 border-secondary-200 rounded-xl p-4 bg-white hover:border-primary-300 transition-all duration-200"
+                className="relative border-2 border-secondary-200 rounded-xl p-4 bg-background hover:border-primary-300 transition-all duration-200"
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-3">
-                    <h4 className="font-medium text-secondary-700">
+                    <h4 className="font-medium text-foreground">
                       Layer {layerIndex + 1}
                     </h4>
-                    <div className="text-xs text-secondary-500 bg-secondary-100 px-2 py-1 rounded-md">
+                    <div className="text-xs text-foreground bg-secondary-100 px-2 py-1 rounded-md">
                       Total:{" "}
                       {Math.round(
                         layer.reduce((sum, block) => sum + block[2], 0) * 100
@@ -217,7 +217,7 @@ const Recipe = ({
                   </div>
                   <button
                     onClick={() => addBlockToLayer(layerIndex)}
-                    className="w-6 h-6 bg-primary-500 text-white rounded-md hover:bg-primary-600 transition-colors duration-200 flex items-center justify-center"
+                    className="w-6 h-6 bg-primary-500 text-background rounded-md hover:bg-primary-600 transition-colors duration-200 flex items-center justify-center"
                     title="Add block"
                   >
                     <svg
@@ -252,18 +252,16 @@ const Recipe = ({
                             e.preventDefault();
                             removeBlockFromLayer(layerIndex, blockIndex);
                           }}
-                          className="px-3 py-2 bg-white border-2 border-secondary-300 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-all duration-200 text-sm font-medium text-secondary-700 flex items-center space-x-2"
+                          className="px-3 py-2 bg-background border-2 border-secondary-300 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-all duration-200 text-sm font-medium text-foreground flex items-center space-x-2"
                           title="Left click to edit, Right click to delete"
                         >
                           <span className="text-primary-600">{modelName}</span>
-                          <span className="text-secondary-500">
-                            L{block[0]}
-                          </span>
+                          <span className="text-foreground">L{block[0]}</span>
                           <span className="text-accent-600">
                             {Math.round(block[2] * 100)}%
                           </span>
                           <svg
-                            className={`w-4 h-4 text-secondary-400 transition-transform duration-200 ${
+                            className={`w-4 h-4 text-foreground transition-transform duration-200 ${
                               isExpanded ? "rotate-180" : ""
                             }`}
                             fill="none"
@@ -281,12 +279,12 @@ const Recipe = ({
 
                         {isExpanded && (
                           <div
-                            className="absolute top-full left-0 mt-1 p-3 bg-white border-2 border-primary-200 rounded-lg shadow-lg z-10 min-w-64"
+                            className="absolute top-full left-0 mt-1 p-3 bg-background border-2 border-primary-200 rounded-lg shadow-lg z-10 min-w-64"
                             data-block-id={blockId}
                           >
                             <div className="space-y-3">
                               <div>
-                                <label className="block text-xs font-medium text-secondary-600 mb-1">
+                                <label className="block text-xs font-medium text-foreground mb-1">
                                   Model
                                 </label>
                                 <Dropdown
@@ -309,7 +307,7 @@ const Recipe = ({
 
                               <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                  <label className="block text-xs font-medium text-secondary-600 mb-1">
+                                  <label className="block text-xs font-medium text-foreground mb-1">
                                     Layer
                                   </label>
                                   <NumberInput
@@ -337,7 +335,7 @@ const Recipe = ({
                                 </div>
 
                                 <div>
-                                  <label className="block text-xs font-medium text-secondary-600 mb-1">
+                                  <label className="block text-xs font-medium text-foreground mb-1">
                                     Weight (%)
                                   </label>
                                   <NumberInput
@@ -366,7 +364,7 @@ const Recipe = ({
                                     );
                                     setExpandedBlock(null);
                                   }}
-                                  className="w-full px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 text-sm font-medium"
+                                  className="w-full px-3 py-2 bg-red-800 text-background rounded-lg hover:bg-red-700 transition-colors duration-200 text-sm font-medium"
                                 >
                                   Remove Block
                                 </button>
