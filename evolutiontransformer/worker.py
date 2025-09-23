@@ -257,6 +257,8 @@ def merge_models_task(
 
 @celery_app.task(name="tasks.get_all_models")
 def get_all_models_task(session_id: str) -> List[str]:
+    load_base_models_if_needed()
+
     base_models = BASE_MODELS_NAMES
     session_models = get_session_models(session_id)
     all_models = list(set(base_models + session_models))

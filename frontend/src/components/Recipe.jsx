@@ -29,23 +29,49 @@ const Recipe = ({
     setModelLayerCounts(counts);
   }, [selectedModel1, selectedModel2]);
 
+  const adjustLayerRecipe = useCallback(() => {
+    const currentLength = layerRecipe.length;
+
+    if (currentLength === numLayers) {
+      return; // No change needed
+    }
+
+    let newRecipe = [...layerRecipe];
+
+    if (currentLength < numLayers) {
+      // Add new layers to the end
+      for (let i = currentLength; i < numLayers; i++) {
+        newRecipe.push([[1, 0, 1.0]]);
+      }
+    } else {
+      // Remove layers from the end
+      newRecipe = newRecipe.slice(0, numLayers);
+    }
+
+    setLayerRecipe(newRecipe);
+  }, [numLayers, layerRecipe, setLayerRecipe]);
+
   const initializeLayerRecipe = useCallback(() => {
     const recipe = [];
     for (let i = 0; i < numLayers; i++) {
-      recipe.push([[1, 0, 0.5]]);
+      recipe.push([[1, 0, 1.0]]);
     }
     setLayerRecipe(recipe);
   }, [numLayers, setLayerRecipe]);
 
   useEffect(() => {
-    if (layerRecipe.length !== numLayers) {
+    if (layerRecipe.length === 0) {
+      // Initialize if recipe is empty
       initializeLayerRecipe();
+    } else if (layerRecipe.length !== numLayers) {
+      // Adjust existing recipe
+      adjustLayerRecipe();
     }
-  }, [numLayers, layerRecipe.length, initializeLayerRecipe]);
+  }, [numLayers, layerRecipe.length, initializeLayerRecipe, adjustLayerRecipe]);
 
   const addBlockToLayer = (layerIndex) => {
     const newRecipe = [...layerRecipe];
-    const newBlock = [1, 1, 0.5];
+    const newBlock = [1, Math.random() < 0.5 ? 0 : 1, 0.5];
     newRecipe[layerIndex] = [...newRecipe[layerIndex], newBlock];
     setLayerRecipe(newRecipe);
   };
@@ -68,7 +94,12 @@ const Recipe = ({
       block[1] = value;
       block[0] = 1;
     } else if (field === "sourceLayer") {
-      block[0] = value;
+      // Ensure layer value is within valid range (1 to max layers for selected model)
+      const selectedModel = block[1];
+      const maxLayers =
+        selectedModel === 0 ? modelLayerCounts.model1 : modelLayerCounts.model2;
+      const maxLayerValue = maxLayers === "N/A" ? 1 : maxLayers;
+      block[0] = Math.max(1, Math.min(maxLayerValue, value));
     } else if (field === "percentage") {
       block[2] = value / 100;
     }
@@ -96,6 +127,44 @@ const Recipe = ({
 
   const getModelName = (modelValue) => {
     return modelValue === 0 ? "Model 1" : "Model 2";
+  };
+
+  const generateRandomRecipe = () => {
+    const randomEmbedding1 = Math.random();
+    const randomEmbedding2 = 1 - randomEmbedding1;
+    setEmbeddingLambdas([randomEmbedding1, randomEmbedding2]);
+
+    const randomLinear1 = Math.random();
+    const randomLinear2 = 1 - randomLinear1;
+    setLinearLambdas([randomLinear1, randomLinear2]);
+
+    const newRecipe = [];
+    for (let i = 0; i < numLayers; i++) {
+      const numBlocks = Math.floor(Math.random() * 5) + 1;
+      const layer = [];
+
+      const weights = [];
+      for (let j = 0; j < numBlocks; j++) {
+        weights.push(Math.random());
+      }
+
+      const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+      const normalizedWeights = weights.map((w) => w / totalWeight);
+
+      for (let j = 0; j < numBlocks; j++) {
+        const randomModel = Math.floor(Math.random() * 2); // 0 or 1
+        const maxLayers =
+          randomModel === 0 ? modelLayerCounts.model1 : modelLayerCounts.model2;
+        const maxLayerValue = maxLayers === "N/A" ? 1 : maxLayers;
+
+        const randomLayer = Math.floor(Math.random() * maxLayerValue) + 1;
+        layer.push([randomLayer, randomModel, normalizedWeights[j]]);
+      }
+
+      newRecipe.push(layer);
+    }
+
+    setLayerRecipe(newRecipe);
   };
 
   const getBlockId = (layerIndex, blockIndex) => {
@@ -127,6 +196,28 @@ const Recipe = ({
           </svg>
         </div>
         <h2 className="text-xl font-bold text-foreground">Layer Recipe</h2>
+        <button
+          onClick={generateRandomRecipe}
+          className="ml-4 px-4 py-2 bg-gradient-to-r from-accent-500 to-primary-500 text-white font-medium rounded-lg hover:from-accent-600 hover:to-primary-600 transition-all duration-200 flex items-center space-x-2 text-sm"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+            <path d="M21 3v5h-5" />
+            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+            <path d="M3 21v-5h5" />
+          </svg>
+          <span>Random Recipe</span>
+        </button>
       </div>
 
       <div className="space-y-8">
